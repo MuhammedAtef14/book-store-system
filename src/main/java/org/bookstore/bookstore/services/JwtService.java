@@ -14,7 +14,7 @@ public class JwtService {
     // i will make it out of the code and get it from the yaml for security consideration
     private static final String SECRET_KEY =
             "Mahmoud-Abdelrazik-Shikabala";
-    private static final Long expirationTime= (long) (2 * 60 * 1000);
+    private static final Long expirationTime= (long) (4 * 60 * 1000);
 
     public String generateAccessToken(String email) {
         return Jwts.builder()

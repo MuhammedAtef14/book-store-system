@@ -26,5 +26,9 @@ server:
   port: 8080
 
 
+Malling:
+
+
+
 jpa:
   show-sql: true

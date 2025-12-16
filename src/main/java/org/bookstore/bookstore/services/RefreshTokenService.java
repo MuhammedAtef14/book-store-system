@@ -25,7 +25,7 @@ public class RefreshTokenService {
         refreshToken.setUser(user);
         refreshToken.setDeviceId(deviceId);
         refreshToken.setUserAgent(userAgent);
-        refreshToken.setExpiryDate(LocalDateTime.now().plusMinutes(3));
+        refreshToken.setExpiryDate(LocalDateTime.now().plusMinutes(10));
 
         refreshTokenRepository.save(refreshToken);
 
