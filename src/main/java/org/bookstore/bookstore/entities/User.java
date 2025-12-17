@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.bookstore.bookstore.enums.UserRole;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 
 @Entity
@@ -17,7 +21,7 @@ import java.util.List;
 )
 @Getter
 @Setter
-public class User {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,17 +52,39 @@ public class User {
 
 
 
-    @Column(name = "EmailVerified", nullable = false)
+    @Column(name = "email_verified", nullable = false)
     private boolean emailVerified = false;
 
     @Column(name = "Enabled", nullable = false)
     private boolean enabled = false;
 
 
-    @Column(name = "CreatedAt", updatable = false)
+    @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
 
 
     @OneToMany(mappedBy = "user")
     private List<EmailVerificationToken> emailVerificationTokens;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(
+                new SimpleGrantedAuthority("ROLE_"+role.name())
+        );
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
 }

@@ -46,9 +46,9 @@ public class RefreshTokenService {
     }
 
 
-    public void logoutAllDevices(User user)
+    public void logoutAllDevices(Integer userId)
     {
-        refreshTokenRepository.deleteAllByUserId(user.getUserId());
+        refreshTokenRepository.deleteAllByUserId(userId);
     }
 
 }

@@ -8,17 +8,15 @@ import lombok.AllArgsConstructor;
 import org.bookstore.bookstore.dtos.JwtResponse;
 import org.bookstore.bookstore.dtos.LoginRequest;
 import org.bookstore.bookstore.dtos.SignUpRequest;
-import org.bookstore.bookstore.dtos.SignUpResponse;
 import org.bookstore.bookstore.entities.EmailVerificationToken;
 import org.bookstore.bookstore.entities.Message;
 import org.bookstore.bookstore.entities.RefreshToken;
 import org.bookstore.bookstore.entities.User;
-import org.bookstore.bookstore.repositories.EmailVerificationTokenRepository;
+import org.bookstore.bookstore.exceptions.BusinessException;
 import org.bookstore.bookstore.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -35,16 +33,16 @@ public class AuthService {
 
 
 
-    public JwtResponse Login(LoginRequest loginRequest,
+    public JwtResponse login(LoginRequest loginRequest,
                              HttpServletRequest request,
                              HttpServletResponse response)
     {
 
         var user=userRepository.findByEmail(loginRequest.getEmail()).orElseThrow(()
-        -> new RuntimeException("User not found"));
+        -> new BusinessException("User not found"));
 
         if(!encoder.matches(loginRequest.getPassword(),user.getPassword()))
-           throw  new RuntimeException("Bad Credentials");
+           throw  new BusinessException("Bad Credentials");
 
 
         //creating the access token and the refresh token
@@ -67,18 +65,18 @@ public class AuthService {
     }
 
     @Transactional
-    public SignUpResponse signUp(SignUpRequest signUpRequest)
+    public void signUp(SignUpRequest signUpRequest)
     {
            Optional<User> user=userRepository.findByEmail(signUpRequest.getEmail());
            if(user.isPresent())
            {
-               throw  new RuntimeException("this email is already registerd ");
+               throw  new BusinessException("this email is already registerd ");
            }
 
            if(!signUpRequest.getPassword().equals(signUpRequest.getPasswordConfirmation()))
            {
 
-               throw  new RuntimeException("the confirmation password does not match the password");
+               throw  new BusinessException("the confirmation password does not match the password");
            }
 
 
@@ -98,10 +96,10 @@ public class AuthService {
 
           var emailVarToken=createEmailVerificationToken(newUser);
 
-          emailService.sendEmail(signUpRequest.getEmail(),new Message("Sign up verification ",emailVarToken.getToken()));
+          emailService.sendEmail(signUpRequest.getEmail(),new Message(emailVarToken.getToken(),"Sign up verification "));
 
 
-          return new SignUpResponse(newUser.getUserId());
+          //return new SignUpResponse(newUser.getUserId());
          //send email
 
 
@@ -149,6 +147,7 @@ public class AuthService {
 
 
 
+
     private void setRefreshCookie(
             HttpServletResponse response,
             String token
@@ -162,8 +161,8 @@ public class AuthService {
     }
 
 
-    public void logoutAllDevices(User user) {
-        refreshTokenService.logoutAllDevices(user);
+    public void logoutAllDevices(Integer userId) {
+        refreshTokenService.logoutAllDevices(userId);
     }
 
 
