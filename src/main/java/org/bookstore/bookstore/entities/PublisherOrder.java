@@ -5,7 +5,7 @@ import lombok.*;
 import  org.bookstore.bookstore.enums.*;
 
 @Entity
-@Table(name = "publisherorders")
+@Table(name = "PublisherOrders")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor

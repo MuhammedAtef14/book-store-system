@@ -7,7 +7,7 @@ import java.util.Set;
 import org.bookstore.bookstore.enums.*;
 
 @Entity
-@Table(name = "customerorders")
+@Table(name = "CustomerOrders")
 @Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,7 +24,7 @@ public class CustomerOrder {
     private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "userID", nullable = false)
+    @JoinColumn(name = "UserID", nullable = false)
     private User user;
 
     @OneToMany(
