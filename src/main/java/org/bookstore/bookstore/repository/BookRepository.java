@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public interface BookRepository extends JpaRepository<Book, Integer> {
     // ADD NEW BOOK (Admin)
     @Modifying
@@ -100,8 +101,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
                 WHERE p.Name LIKE %:publisher%
             """, nativeQuery = true)
     List<Book> findByPublisher(@Param("publisher") String publisherName);
-
-
 
 
 }
