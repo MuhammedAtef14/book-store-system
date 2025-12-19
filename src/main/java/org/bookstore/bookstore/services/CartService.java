@@ -57,8 +57,6 @@ public class CartService {
     public CartDto getCartDetails(Integer userId) {
         Cart cart = cartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Cart not found"));
-
-        // Convert to DTO to calculate totals dynamically
         return cartMapper.toDto(cart);
     }
 
