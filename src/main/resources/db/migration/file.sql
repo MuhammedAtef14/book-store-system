@@ -1,0 +1,1 @@
+UPDATE Users SET Username=: "Atoof" , Phone=:"01067957464" , Role=:Admin WHERE UserId=2
