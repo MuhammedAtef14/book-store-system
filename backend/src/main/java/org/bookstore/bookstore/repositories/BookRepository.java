@@ -6,13 +6,19 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public interface BookRepository extends JpaRepository<Book, Integer> {
+    // GET ALL BOOKS
+    @Query(value = "SELECT * FROM Books", nativeQuery = true)
+    List<Book> getAllBooks();
+
     // ADD NEW BOOK (Admin)
     @Modifying
     @Query(value = """
@@ -99,8 +105,6 @@ public interface BookRepository extends JpaRepository<Book, Integer> {
                 WHERE p.Name LIKE %:publisher%
             """, nativeQuery = true)
     List<Book> findByPublisher(@Param("publisher") String publisherName);
-
-
 
 
 }
