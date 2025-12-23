@@ -1,2 +1,0 @@
-ALTER TABLE CustomerOrders
-    ADD COLUMN TotalPrice DECIMAL(10, 2) NOT NULL DEFAULT 0.00;
