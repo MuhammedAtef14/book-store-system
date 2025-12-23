@@ -7,10 +7,11 @@ import java.math.BigDecimal;
 import java.util.Set;
 
 @Entity
-@Table(name = "books")
-@Getter @Setter
+@Table(name = "Books")
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
 public class Book {
 
     @Id

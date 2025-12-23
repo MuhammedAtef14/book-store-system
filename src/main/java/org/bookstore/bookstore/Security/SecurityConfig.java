@@ -35,7 +35,8 @@ public class SecurityConfig {
                                 "/auth/verify-user",
                                 "/auth/refresh",
                                 "/auth/forgotpassword",
-                                "/auth/checkforgotpassword"
+                                "/auth/checkforgotpassword",
+                                "/cart/**"
                         ).permitAll()
 
                         // Admin endpoints
