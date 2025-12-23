@@ -1,4 +1,4 @@
-package org.bookstore.bookstore.service;
+package org.bookstore.bookstore.services;
 
 import org.bookstore.bookstore.entities.Book;
 import org.bookstore.bookstore.repository.BookRepository;

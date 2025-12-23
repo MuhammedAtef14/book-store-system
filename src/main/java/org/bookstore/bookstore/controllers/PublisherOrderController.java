@@ -1,6 +1,6 @@
-package org.bookstore.bookstore.controller;
+package org.bookstore.bookstore.controllers;
 
-import org.bookstore.bookstore.service.PublisherOrderService;
+import org.bookstore.bookstore.services.PublisherOrderService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

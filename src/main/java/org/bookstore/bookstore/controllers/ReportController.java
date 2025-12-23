@@ -1,6 +1,6 @@
-package org.bookstore.bookstore.controller;
+package org.bookstore.bookstore.controllers;
 
-import org.bookstore.bookstore.service.ReportService;
+import org.bookstore.bookstore.services.ReportService;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;

@@ -1,4 +1,4 @@
-package org.bookstore.bookstore.service;
+package org.bookstore.bookstore.services;
 
 import org.bookstore.bookstore.repository.ReportRepository;
 import org.springframework.stereotype.Service;

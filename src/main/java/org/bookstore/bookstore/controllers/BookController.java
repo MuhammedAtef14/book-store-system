@@ -1,7 +1,7 @@
-package org.bookstore.bookstore.controller;
+package org.bookstore.bookstore.controllers;
 
 import org.bookstore.bookstore.entities.Book;
-import org.bookstore.bookstore.service.BookService;
+import org.bookstore.bookstore.services.BookService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
