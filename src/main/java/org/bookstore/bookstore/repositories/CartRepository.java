@@ -12,10 +12,21 @@ import java.util.Optional;
 public interface CartRepository extends JpaRepository<Cart,Long> {
 
 
-    // ✅ Find cart by user id
     @Query(value = "SELECT * FROM Carts c WHERE c.user_id = :userId", nativeQuery = true)
     Optional<Cart> findByUser_UserId(@Param("userId") Integer userId);
 
+    // Insert cart for user
+    @Transactional
+    @Modifying
+    @Query(value = """
+        INSERT INTO Carts (UserID)
+        VALUES (:userId)
+        """, nativeQuery = true)
+    void insertCartForUser(@Param("userId") Integer userId);
+
+    // Get last inserted cart ID
+    @Query(value = "SELECT LAST_INSERT_ID()", nativeQuery = true)
+    Long getLastInsertedCartId();
 
     @Modifying
     @Transactional

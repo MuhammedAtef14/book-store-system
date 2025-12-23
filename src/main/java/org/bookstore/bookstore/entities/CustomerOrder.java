@@ -2,6 +2,8 @@ package org.bookstore.bookstore.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Set;
 import org.bookstore.bookstore.enums.*;
@@ -19,6 +21,10 @@ public class CustomerOrder {
 
     @Column(nullable = false)
     private LocalDateTime orderDate = LocalDateTime.now();
+
+    @Column(name = "TotalPrice")
+    private BigDecimal totalPrice;
+
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;

@@ -5,4 +5,7 @@ import lombok.Setter;
 @Setter
 public class CheckoutRequest {
     private String cardNumber;
+    private String cardHolderName;
+    private String expirationDate;
+    private String cvv;
 }

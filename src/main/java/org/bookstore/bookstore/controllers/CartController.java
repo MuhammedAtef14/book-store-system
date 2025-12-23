@@ -2,6 +2,7 @@ package org.bookstore.bookstore.controllers;
 
 import lombok.AllArgsConstructor;
 import org.bookstore.bookstore.dtos.CartDto;
+import org.bookstore.bookstore.dtos.CheckoutRequest;
 import org.bookstore.bookstore.services.CartService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -53,5 +54,14 @@ public class CartController {
     ) {
         cartService.clearCart(userId);
         return ResponseEntity.ok("Cart Cleared");
+    }
+
+    @PostMapping("/{userId}/checkout")
+    public ResponseEntity<String> checkout(
+            @PathVariable Integer userId,
+            @RequestBody CheckoutRequest credit_card
+    ) {
+        cartService.checkoutCart(userId, credit_card);
+        return ResponseEntity.ok("Checkout successful");
     }
 }

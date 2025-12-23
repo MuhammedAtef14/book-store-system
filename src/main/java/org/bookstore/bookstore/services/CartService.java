@@ -2,19 +2,18 @@ package org.bookstore.bookstore.services;
 
 import lombok.AllArgsConstructor;
 import org.bookstore.bookstore.dtos.CartDto;
-import org.bookstore.bookstore.entities.Book;
-import org.bookstore.bookstore.entities.Cart;
-import org.bookstore.bookstore.entities.CartItem;
-import org.bookstore.bookstore.entities.User;
+import org.bookstore.bookstore.dtos.CheckoutRequest;
+import org.bookstore.bookstore.entities.*;
 import org.bookstore.bookstore.exceptions.BusinessException;
 import org.bookstore.bookstore.mappers.CartMapper;
-import org.bookstore.bookstore.repositories.BookRepository;
-import org.bookstore.bookstore.repositories.CartItemRepository;
-import org.bookstore.bookstore.repositories.CartRepository;
-import org.bookstore.bookstore.repositories.UserRepository;
+import org.bookstore.bookstore.repositories.*;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
 
 @AllArgsConstructor
 @Service
@@ -24,8 +23,10 @@ public class CartService {
     private final BookRepository bookRepository;
     private final CartItemRepository cartItemRepository;
     private final CartMapper cartMapper;
+    private final PaymentService paymentService;
+    private final CustomerOrderRepository  customerOrderRepository;
+    private final CustomerOrderItemRepository customerOrderItemRepository;
 
-    // ✅ ADD TO CART (native, safe, single source of truth)
     public void addToCart(Integer userId, int bookId, int quantity) {
 
         Cart cart = cartRepository.findByUser_UserId(userId)
@@ -41,7 +42,7 @@ public class CartService {
         );
     }
 
-    // ✅ GET CART
+
     public CartDto getCartDetails(Integer userId) {
         Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new BusinessException("Cart not found"));
@@ -49,7 +50,7 @@ public class CartService {
         return cartMapper.toDto(cart);
     }
 
-    // ✅ REMOVE ITEM (by bookId, not cartItemId)
+
     public void removeItem(Integer userId, Long bookId) {
 
         Cart cart = cartRepository.findByUser_UserId(userId)
@@ -75,15 +76,47 @@ public class CartService {
         cartRepository.deleteCartByUserId(userId);
     }
 
-    // ✅ CREATE CART
+    public void checkoutCart(Integer userId, CheckoutRequest credit_card) {
+        paymentService.validCredintials(userId, credit_card);
+
+        Cart cart = cartRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new BusinessException("Cart not found"));
+
+        Long cartId = cart.getId();
+
+        CartDto cartDto = cartMapper.toDto(cart);
+        BigDecimal totalPrice = cartDto.getTotalPrice();
+
+        if (totalPrice == null || totalPrice.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new BusinessException("Cart is empty");
+        }
+
+        customerOrderRepository.insertCustomerOrder(
+                userId,
+                totalPrice,
+                "PROCESSING",
+                Timestamp.valueOf(LocalDateTime.now())
+        );
+
+        Integer orderId = customerOrderRepository.getLastInsertedOrderId();
+
+        customerOrderItemRepository.insertOrderItemsFromCart(orderId, cartId);
+
+        cartItemRepository.clearCart(cartId);
+    }
+
+
+
+
     private Cart createCartForUser(Integer userId) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new BusinessException("User not found"));
+        if (!userRepository.existsById(userId)) {
+            throw new BusinessException("User not found");
+        }
+        cartRepository.insertCartForUser(userId);
 
-        Cart cart = new Cart();
-        cart.setUser(user);
-        return cartRepository.save(cart);
+        return cartRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new BusinessException("Cart creation failed"));
     }
 
 
