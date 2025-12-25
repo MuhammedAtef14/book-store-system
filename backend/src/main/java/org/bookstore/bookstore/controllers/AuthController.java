@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.bookstore.bookstore.dtos.*;
 import org.bookstore.bookstore.dtos.auth.*;
+import org.bookstore.bookstore.entities.User;
 import org.bookstore.bookstore.services.Authintication.AuthService;
 import org.bookstore.bookstore.services.Authintication.JwtService;
 import org.bookstore.bookstore.services.Authintication.RefreshTokenService;
@@ -14,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -29,9 +33,12 @@ public class AuthController {
         Authentication auth = SecurityContextHolder
                 .getContext()
                 .getAuthentication();
-
-        String email = auth.getName();
-        return ResponseEntity.ok(email);
+        User user = (User) auth.getPrincipal();
+        Map<String, Object> response = new HashMap<>();
+        response.put("userId", user.getUserId());
+        response.put("email", user.getEmail());
+        response.put("userRole", user.getRole());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/signup")
