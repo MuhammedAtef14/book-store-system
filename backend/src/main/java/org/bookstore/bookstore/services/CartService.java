@@ -1,5 +1,6 @@
 package org.bookstore.bookstore.services;
 
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.bookstore.bookstore.dtos.CartDto;
 import org.bookstore.bookstore.dtos.CheckoutRequest;
@@ -76,6 +77,8 @@ public class CartService {
         cartRepository.deleteCartByUserId(userId);
     }
 
+
+    @Transactional
     public void checkoutCart(Integer userId, CheckoutRequest credit_card) {
         paymentService.validCredintials(userId, credit_card);
 

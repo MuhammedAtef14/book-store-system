@@ -18,7 +18,7 @@ public class JwtService {
     private static final String SECRET_KEY =
             "JXz2K5mJqF8cVZ+ZbZqX6eGz6wP0F0pZxJ+ZxF1cY6U=";
 
-    private static final long EXPIRATION_TIME = 2 * 60 * 1000;
+    private static final long EXPIRATION_TIME = 10 * 60 * 1000;
 
     public String generateAccessToken(String email) {
         return Jwts.builder()

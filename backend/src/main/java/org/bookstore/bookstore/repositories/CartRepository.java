@@ -19,7 +19,7 @@ public interface CartRepository extends JpaRepository<Cart,Long> {
     @Transactional
     @Modifying
     @Query(value = """
-        INSERT INTO Carts (UserID)
+        INSERT INTO Carts (user_id)
         VALUES (:userId)
         """, nativeQuery = true)
     void insertCartForUser(@Param("userId") Integer userId);

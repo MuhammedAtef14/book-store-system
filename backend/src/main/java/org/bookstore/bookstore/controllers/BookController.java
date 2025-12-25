@@ -24,19 +24,19 @@ public class BookController {
     }
 
     // ADD A NEW BOOK
-    @PostMapping("/add")
+    @PostMapping("/admin/add")
     public void addBook(@RequestBody Book book) {
         bookService.addBook(book);
     }
 
     // UPDATE BOOK INFORMATION
-    @PutMapping("/update")
+    @PutMapping("/admin/update")
     public void updateBook(@RequestBody Book book) {
         bookService.updateBookInfo(book);
     }
 
     // UPDATE BOOK STOCK
-    @PutMapping("/updateStock/{bookId}/{quantity}")
+    @PutMapping("/admin/updateStock/{bookId}/{quantity}")
     public void updateStock(@PathVariable Integer bookId, @PathVariable Integer quantity) {
         bookService.updateBookStock(bookId, quantity);
     }
