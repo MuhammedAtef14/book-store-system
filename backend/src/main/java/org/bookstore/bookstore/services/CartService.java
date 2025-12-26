@@ -92,7 +92,7 @@ public class CartService {
 
         List<CartItem> before= cart.getItems();
 
-        System.out.println("am hereee ");
+        //System.out.println("am hereee ");
         CartDto cartDto = cartMapper.toDto(cart);
         BigDecimal totalPrice = cartDto.getTotalPrice();
 

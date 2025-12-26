@@ -2,6 +2,7 @@ package org.bookstore.bookstore.repositories;
 
 import org.bookstore.bookstore.entities.PublisherOrder;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +24,8 @@ public interface PublisherOrderRepository extends JpaRepository<PublisherOrder, 
     );
 
     // CONFIRM A PUBLISHER ORDER
-    @Modifying
-    @Query(value = """
-                UPDATE PublisherOrders
-                SET Status = 'COMPLETED'
-                WHERE PublisherOrderID = :orderId
-            """, nativeQuery = true)
-    void confirmPublisherOrder(@Param("orderId") Integer orderId);
+    @Procedure(procedureName = "CompletePublisherOrder")
+    void confirmPublisherOrder(@Param("p_order_id") Integer orderId);
 
     // DELETE A PUBLISHER ORDER
     @Modifying

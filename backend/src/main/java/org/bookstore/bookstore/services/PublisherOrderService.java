@@ -20,6 +20,9 @@ public class PublisherOrderService {
     }
 
     public void confirmOrder(Integer orderId) {
+
+        System.out.println("in confirmation ");
+
         publisherOrderRepository.confirmPublisherOrder(orderId);
     }
 
