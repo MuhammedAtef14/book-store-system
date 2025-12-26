@@ -82,7 +82,7 @@ const App = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center gap-4">
-              {!isAdmin && (
+              {!isAdmin ? (
                 <>
                   <button
                     onClick={() => setCurrentPage('books')}
@@ -113,10 +113,18 @@ const App = () => {
                     <Package className="w-5 h-5" />
                     Orders
                   </button>
-                </>
-              )}
 
-              {isAdmin && (
+                  <button
+                    onClick={() => setCurrentPage('profile')}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition ${
+                      currentPage === 'profile' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'
+                    }`}
+                  >
+                    <User className="w-5 h-5" />
+                    Profile
+                  </button>
+                </>
+              ) : (
                 <>
                   <button
                     onClick={() => setCurrentPage('admin')}
@@ -141,16 +149,6 @@ const App = () => {
               )}
 
               <button
-                onClick={() => setCurrentPage('profile')}
-                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition ${
-                  currentPage === 'profile' ? 'bg-indigo-100 text-indigo-700' : 'text-gray-600 hover:bg-gray-100'
-                }`}
-              >
-                <User className="w-5 h-5" />
-                Profile
-              </button>
-
-              <button
                 onClick={logout}
                 className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
               >
@@ -171,7 +169,7 @@ const App = () => {
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 border-t space-y-2">
-              {!isAdmin && (
+              {!isAdmin ? (
                 <>
                   <button
                     onClick={() => {
@@ -205,10 +203,19 @@ const App = () => {
                     <Package className="w-5 h-5" />
                     Orders
                   </button>
-                </>
-              )}
 
-              {isAdmin && (
+                  <button
+                    onClick={() => {
+                      setCurrentPage('profile');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
+                  >
+                    <User className="w-5 h-5" />
+                    Profile
+                  </button>
+                </>
+              ) : (
                 <>
                   <button
                     onClick={() => {
@@ -235,17 +242,6 @@ const App = () => {
               )}
 
               <button
-                onClick={() => {
-                  setCurrentPage('profile');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
-              >
-                <User className="w-5 h-5" />
-                Profile
-              </button>
-
-              <button
                 onClick={logout}
                 className="w-full flex items-center gap-2 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
               >
@@ -260,10 +256,10 @@ const App = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {currentPage === 'books' && <BooksPage isAdmin={isAdmin} />}
-        {currentPage === 'cart' && <CartPage userId={user.userId} />}
+        {currentPage === 'cart' && !isAdmin && <CartPage userId={user.userId} />}
         {currentPage === 'admin' && isAdmin && <AdminDashboard />}
-        {currentPage === 'orders' && <OrderHistory userId={user.userId} />}
-        {currentPage === 'profile' && <UserProfile />}
+        {currentPage === 'orders' && !isAdmin && <OrderHistory userId={user.userId} />}
+        {currentPage === 'profile' && !isAdmin && <UserProfile />}
       </main>
     </div>
   );

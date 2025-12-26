@@ -12,19 +12,18 @@ const OrderHistory = ({ userId }) => {
   }, []);
 
   const loadOrders = async () => {
-    setLoading(true);
-    try {
-      // Note: You'll need to create this endpoint in your backend
-      // For now, this is a placeholder
-      const data = await apiCall(`/orders/user/${userId}`);
-      setOrders(data || []);
-    } catch (error) {
-      console.error('Failed to load orders:', error);
-      setOrders([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const data = await apiCall(`/customer/${userId}/viewPastOrders`);
+    setOrders(Array.isArray(data?.orders) ? data.orders : []);
+  } catch (error) {
+    console.error('Failed to load orders:', error);
+    setOrders([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const getStatusColor = (status) => {
     const colors = {

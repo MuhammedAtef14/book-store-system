@@ -41,6 +41,12 @@ public class BookController {
         bookService.updateBookStock(bookId, quantity);
     }
 
+    // DELETE BOOK
+    @DeleteMapping("/admin/delete/{bookId}")
+    public void deleteBook(@PathVariable Integer bookId) {
+        bookService.deleteBook(bookId);
+    }
+
     // SEARCH BOOK BY ISBN
     @GetMapping("/search/isbn/{isbn}")
     public Optional<Book> searchByIsbn(@PathVariable String isbn) {

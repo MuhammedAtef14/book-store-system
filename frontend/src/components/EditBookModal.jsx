@@ -23,14 +23,14 @@ const EditBookModal = ({ book, onClose, onSuccess }) => {
         category: formData.category
       };
 
-      await apiCall('/books/update', {
+      await apiCall('/books/admin/update', {
         method: 'PUT',
         body: JSON.stringify(updateData)
       });
 
       // Update stock separately if changed
       if (formData.numberOfBooks !== book.numberOfBooks) {
-        await apiCall(`/books/updateStock/${book.bookID}/${formData.numberOfBooks}`, {
+        await apiCall(`/books/admin/updateStock/${book.bookID}/${formData.numberOfBooks}`, {
           method: 'PUT'
         });
       }

@@ -1,6 +1,7 @@
 package org.bookstore.bookstore.services;
 
 import org.bookstore.bookstore.entities.Book;
+import org.bookstore.bookstore.exceptions.BusinessException;
 import org.bookstore.bookstore.repositories.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,10 @@ public class BookService {
 
     // ADD A NEW BOOK
     public void addBook(Book book) {
+        if (book.getPublisher() == null || book.getPublisher().getPublisherID() == null) {
+            throw new BusinessException("Publisher information is required");
+        }
+
         bookRepository.insertBook(
                 book.getIsbn(),
                 book.getTitle(),
@@ -48,7 +53,18 @@ public class BookService {
 
     // UPDATE BOOK STOCK
     public void updateBookStock(Integer bookId, Integer newQuantity) {
+        if (newQuantity < 0) {
+            throw new BusinessException("Stock quantity cannot be negative");
+        }
         bookRepository.updateBookQuantity(bookId, newQuantity);
+    }
+
+    // DELETE BOOK
+    public void deleteBook(Integer bookId) {
+        if (!bookRepository.existsById(bookId)) {
+            throw new BusinessException("Book not found");
+        }
+        bookRepository.deleteById(bookId);
     }
 
     // SEARCH BOOK BY ISBN

@@ -24,11 +24,11 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       const [monthSales, top5, top10, pending, completed] = await Promise.all([
-        apiCall('/reports/totalSales/previousMonth'),
-        apiCall('/reports/top5Customers'),
-        apiCall('/reports/top10Books'),
-        apiCall('/publisherOrders/pending'),
-        apiCall('/publisherOrders/completed')
+        apiCall('/reports/admin/totalSales/previousMonth'),
+        apiCall('/reports/admin/top5Customers'),
+        apiCall('/reports/admin/top10Books'),
+        apiCall('/publisherOrders/admin/pending'),
+        apiCall('/publisherOrders/admin/completed')
       ]);
 
       setReports({
@@ -44,6 +44,7 @@ const AdminDashboard = () => {
       });
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
+      alert('Failed to load dashboard data: ' + error.message);
     } finally {
       setLoading(false);
     }
@@ -51,16 +52,16 @@ const AdminDashboard = () => {
 
   const handleDateSearch = async () => {
     try {
-      const sales = await apiCall(`/reports/totalSales/date/${selectedDate}`);
+      const sales = await apiCall(`/reports/admin/totalSales/date/${selectedDate}`);
       setReports(prev => ({ ...prev, salesByDate: sales || 0 }));
     } catch (error) {
-      alert('Failed to fetch sales for date');
+      alert('Failed to fetch sales for date: ' + error.message);
     }
   };
 
   const confirmOrder = async (orderId) => {
     try {
-      await apiCall(`/publisherOrders/confirm/${orderId}`, { method: 'PUT' });
+      await apiCall(`/publisherOrders/admin/confirm/${orderId}`, { method: 'PUT' });
       alert('Order confirmed successfully!');
       loadDashboardData();
     } catch (error) {
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
     if (!confirm('Are you sure you want to delete this order?')) return;
 
     try {
-      await apiCall(`/publisherOrders/delete/${orderId}`, { method: 'DELETE' });
+      await apiCall(`/publisherOrders/admin/delete/${orderId}`, { method: 'DELETE' });
       alert('Order deleted successfully!');
       loadDashboardData();
     } catch (error) {
@@ -85,7 +86,7 @@ const AdminDashboard = () => {
     if (!quantity || isNaN(quantity)) return;
 
     try {
-      await apiCall(`/publisherOrders/place/${bookId}/${quantity}`, { method: 'POST' });
+      await apiCall(`/publisherOrders/admin/place/${bookId}/${quantity}`, { method: 'POST' });
       alert('Publisher order placed successfully!');
       loadDashboardData();
     } catch (error) {
@@ -112,7 +113,7 @@ const AdminDashboard = () => {
             <div>
               <p className="text-sm text-gray-600">Previous Month Sales</p>
               <p className="text-2xl font-bold text-indigo-600">
-                ${reports.totalSalesMonth.toFixed(2)}
+                ${Number(reports.totalSalesMonth).toFixed(2)}
               </p>
             </div>
             <DollarSign className="w-12 h-12 text-indigo-600 opacity-20" />
@@ -169,7 +170,7 @@ const AdminDashboard = () => {
             <p className="text-lg">
               Total Sales on {selectedDate}: 
               <span className="font-bold text-indigo-600 ml-2">
-                ${reports.salesByDate.toFixed(2)}
+                ${Number(reports.salesByDate).toFixed(2)}
               </span>
             </p>
           </div>

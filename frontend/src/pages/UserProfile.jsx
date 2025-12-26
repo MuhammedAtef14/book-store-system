@@ -11,7 +11,8 @@ const UserProfile = () => {
     firstName: '',
     lastName: '',
     phone: '',
-    email: ''
+    email: '',
+    username: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -21,24 +22,25 @@ const UserProfile = () => {
 
   const loadProfile = async () => {
     try {
-      // Note: You'll need to create this endpoint in your backend
-      const data = await apiCall('/users/profile');
+      const data = await apiCall('/customer/profile');
       setProfile(data);
       setFormData({
         firstName: data.firstName || '',
         lastName: data.lastName || '',
         phone: data.phone || '',
-        email: data.email || ''
+        email: data.email || '',
+        username: data.username || ''
       });
     } catch (error) {
       console.error('Failed to load profile:', error);
+      alert('Failed to load profile: ' + error.message);
     }
   };
 
   const handleSave = async () => {
     setLoading(true);
     try {
-      await apiCall('/users/profile', {
+      await apiCall('/customer/profile', {
         method: 'PUT',
         body: JSON.stringify(formData)
       });
@@ -187,6 +189,15 @@ const UserProfile = () => {
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <User className="w-4 h-4" />
+                Username
+              </label>
+              <p className="px-4 py-2 bg-gray-50 rounded-lg">{profile.username}</p>
+              <p className="text-xs text-gray-500 mt-1">Username cannot be changed</p>
+            </div>
+
+            <div>
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
                 <Shield className="w-4 h-4" />
                 Role
               </label>
@@ -197,14 +208,6 @@ const UserProfile = () => {
                   {profile.role}
                 </span>
               </p>
-            </div>
-
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <User className="w-4 h-4" />
-                Username
-              </label>
-              <p className="px-4 py-2 bg-gray-50 rounded-lg">{profile.username}</p>
             </div>
           </div>
 

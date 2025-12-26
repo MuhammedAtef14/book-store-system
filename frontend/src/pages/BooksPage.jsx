@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiCall } from '../api/api';
-import { ShoppingCart, Search, Edit, Trash2, Plus } from 'lucide-react';
+import { ShoppingCart, Search, Edit, Trash2, Plus, Package } from 'lucide-react';
 import AddBookModal from '../components/AddBookModal';
 import EditBookModal from '../components/EditBookModal';
 
@@ -21,9 +21,11 @@ const BooksPage = ({ isAdmin }) => {
     setLoading(true);
     try {
       const data = await apiCall('/books/all');
-      setBooks(data);
+      setBooks(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to load books:', error);
+      alert('Failed to load books: ' + error.message);
+      setBooks([]);
     } finally {
       setLoading(false);
     }
@@ -37,10 +39,11 @@ const BooksPage = ({ isAdmin }) => {
 
     setLoading(true);
     try {
-      const data = await apiCall(`/books/search/${searchType}/${searchTerm}`);
+      const data = await apiCall(`/books/search/${searchType}/${encodeURIComponent(searchTerm)}`);
       setBooks(Array.isArray(data) ? data : [data]);
     } catch (error) {
       console.error('Search failed:', error);
+      alert('Search failed: ' + error.message);
       setBooks([]);
     } finally {
       setLoading(false);
@@ -49,10 +52,12 @@ const BooksPage = ({ isAdmin }) => {
 
   const handleAddToCart = async (bookId) => {
     try {
-      await apiCall(`/cart/${userId}/add?bookId=${bookId}&quantity=1`, { method: 'POST' });
-      alert('Added to cart!');
+      await apiCall(`/cart/${userId}/add?bookId=${bookId}&quantity=1`, { 
+        method: 'POST' 
+      });
+      alert('Added to cart!'); 
     } catch (error) {
-      alert('Failed to add to cart: ' + error.message);
+      alert(error.message || 'Failed to add to cart');
     }
   };
 
@@ -60,11 +65,29 @@ const BooksPage = ({ isAdmin }) => {
     if (!confirm('Are you sure you want to delete this book?')) return;
 
     try {
-      await apiCall(`/books/delete/${bookId}`, { method: 'DELETE' });
+      await apiCall(`/books/admin/delete/${bookId}`, { method: 'DELETE' });
       alert('Book deleted successfully!');
       loadAllBooks();
     } catch (error) {
       alert('Failed to delete book: ' + error.message);
+    }
+  };
+
+  const placePublisherOrder = async (bookId) => {
+    const quantity = prompt('Enter quantity to order from publisher:');
+    if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
+      alert('Please enter a valid positive number');
+      return;
+    }
+
+    try {
+      await apiCall(`/publisherOrders/admin/place/${bookId}/${parseInt(quantity)}`, { 
+        method: 'POST' 
+      });
+      alert('Publisher order placed successfully!');
+      loadAllBooks();
+    } catch (error) {
+      alert('Failed to place publisher order: ' + error.message);
     }
   };
 
@@ -145,20 +168,30 @@ const BooksPage = ({ isAdmin }) => {
               </div>
 
               {isAdmin ? (
-                <div className="flex gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <button
                     onClick={() => setEditingBook(book)}
-                    className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                    className="bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-1"
+                    title="Edit Book"
                   >
                     <Edit className="w-4 h-4" />
-                    Edit
+                    <span className="text-xs">Edit</span>
+                  </button>
+                  <button
+                    onClick={() => placePublisherOrder(book.bookID)}
+                    className="bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-1"
+                    title="Order from Publisher"
+                  >
+                    <Package className="w-4 h-4" />
+                    <span className="text-xs">Order</span>
                   </button>
                   <button
                     onClick={() => handleDeleteBook(book.bookID)}
-                    className="flex-1 bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-2"
+                    className="bg-red-600 text-white py-2 rounded-lg hover:bg-red-700 transition flex items-center justify-center gap-1"
+                    title="Delete Book"
                   >
                     <Trash2 className="w-4 h-4" />
-                    Delete
+                    <span className="text-xs">Delete</span>
                   </button>
                 </div>
               ) : (

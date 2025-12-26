@@ -3,14 +3,14 @@ spring:
     name: book-store
 
   datasource:
-    url: jdbc:mysql://localhost:3306/book_store?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3307/book_store?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     username: root
-    password: Atoof000000
+    password: MyPassword!@1814
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
     show-sql: true
     properties:

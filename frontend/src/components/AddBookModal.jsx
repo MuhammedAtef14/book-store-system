@@ -27,7 +27,7 @@ const AddBookModal = ({ onClose, onSuccess }) => {
         publisher: { publisherID: parseInt(formData.publisherID) }
       };
 
-      await apiCall('/books/add', {
+      await apiCall('/books/admin/add', {
         method: 'POST',
         body: JSON.stringify(bookData)
       });
