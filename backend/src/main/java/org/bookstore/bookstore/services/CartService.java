@@ -85,7 +85,7 @@ public class CartService {
         Cart cart = cartRepository.findByUser_UserId(userId)
                 .orElseThrow(() -> new BusinessException("Cart not found"));
 
-        Long cartId = cart.getId();
+        int cartId = cart.getId();
 
         CartDto cartDto = cartMapper.toDto(cart);
         BigDecimal totalPrice = cartDto.getTotalPrice();

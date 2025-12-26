@@ -19,7 +19,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
             quantity = quantity + VALUES(quantity)
         """, nativeQuery = true)
     void addToCart(
-            @Param("cartId") Long cartId,
+            @Param("cartId") int cartId,
             @Param("bookId") Long bookId,
             @Param("quantity") int quantity
     );
@@ -35,7 +35,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
         AND quantity > 0
         """, nativeQuery = true)
     void decrementQuantity(
-            @Param("cartId") Long cartId,
+            @Param("cartId") int cartId,
             @Param("bookId") Long bookId
     );
 
@@ -48,7 +48,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
         AND quantity <= 0
         """, nativeQuery = true)
     void removeIfZero(
-            @Param("cartId") Long cartId,
+            @Param("cartId") int cartId,
             @Param("bookId") Long bookId
     );
 
@@ -60,7 +60,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
           AND book_id = :bookId
         """, nativeQuery = true)
     void removeFromCart(
-            @Param("cartId") Long cartId,
+            @Param("cartId") int cartId,
             @Param("bookId") Long bookId
     );
 
@@ -71,5 +71,5 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
         DELETE FROM CartItems
         WHERE cart_id = :cartId
         """, nativeQuery = true)
-    void clearCart(@Param("cartId") Long cartId);
+    void clearCart(@Param("cartId") int cartId);
 }

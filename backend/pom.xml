@@ -169,7 +169,7 @@
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/book_store</url>
                     <user>root</user>
-                    <password>StrongPassword123</password>
+                    <password>Atoof000000</password>
                     <cleanDisabled>false</cleanDisabled>
                 </configuration>
             </plugin>

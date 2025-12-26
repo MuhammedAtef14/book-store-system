@@ -29,7 +29,7 @@ public interface CustomerOrderItemRepository extends JpaRepository<CustomerOrder
         """, nativeQuery = true)
     void insertOrderItemsFromCart(
             @Param("orderId") Integer orderId,
-            @Param("cartId") Long cartId
+            @Param("cartId") int cartId
     );
 
 
