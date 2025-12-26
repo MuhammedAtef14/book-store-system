@@ -1,9 +1,6 @@
 DELIMITER
 //
 
--- ======================================================
--- 1. Prevent negative stock when updating a book
--- ======================================================
 CREATE TRIGGER before_book_update
     BEFORE UPDATE
     ON Books
@@ -16,9 +13,6 @@ END IF;
 END;
 //
 
--- ======================================================
--- 2. Automatically place order when stock falls below threshold
--- ======================================================
 CREATE TRIGGER after_book_update
     AFTER UPDATE
     ON Books
@@ -33,9 +27,6 @@ END IF;
 END;
 //
 
--- ======================================================
--- 3. Confirm Publisher Order and update Book stock
--- ======================================================
 CREATE TRIGGER after_order_confirm
     AFTER UPDATE
     ON PublisherOrders
@@ -49,23 +40,6 @@ END IF;
 END;
 //
 
--- ======================================================
--- 4. Update CustomerOrder TotalPrice automatically
--- ======================================================
-CREATE TRIGGER after_order_item_insert
-    AFTER INSERT
-    ON CustomerOrderItems
-    FOR EACH ROW
-BEGIN
-    UPDATE CustomerOrders
-    SET TotalPrice = TotalPrice + NEW.Price * NEW.Quantity
-    WHERE CustomerOrderID = NEW.CustomerOrderID;
-END;
-//
-
--- ======================================================
--- 5. Deduct Book stock when a customer places an order
--- ======================================================
 CREATE TRIGGER after_customer_order_item
     AFTER INSERT
     ON CustomerOrderItems
@@ -85,25 +59,7 @@ END IF;
 END;
 //
 
--- ======================================================
--- 6. Clear Cart on User Logout (simulate deletion)
--- ======================================================
-CREATE TRIGGER before_user_delete
-    BEFORE DELETE
-    ON Users
-    FOR EACH ROW
-BEGIN
-    DELETE
-    FROM CartItems
-    WHERE cart_id IN (SELECT cart_id FROM Carts WHERE user_id = OLD.UserID);
 
-    DELETE FROM Carts WHERE user_id = OLD.UserID;
-END;
-//
-
--- ======================================================
--- 7. Enforce allowed categories on Books
--- ======================================================
 CREATE TRIGGER before_book_insert
     BEFORE INSERT
     ON Books

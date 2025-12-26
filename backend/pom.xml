@@ -167,9 +167,9 @@
                 <artifactId>flyway-maven-plugin</artifactId>
                 <version>11.14.1</version>
                 <configuration>
-                    <url>jdbc:mysql://localhost:3307/book_store</url>
+                    <url>jdbc:mysql://localhost:3306/book_store</url>
                     <user>root</user>
-                    <password>MyPassword!@1814</password>
+                    <password>StrongPassword123</password>
                     <cleanDisabled>false</cleanDisabled>
                 </configuration>
             </plugin>
