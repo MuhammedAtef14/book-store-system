@@ -19,16 +19,18 @@ const CartPage = ({ userId }) => {
   }, [userId]);
 
   const loadCart = async () => {
-    setLoading(true);
-    try {
-      const data = await apiCall(`/cart/${userId}`);
-      setCart(data);
-    } catch (error) {
-      console.error('Failed to load cart:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  setLoading(true);
+  try {
+    const data = await apiCall(`/cart/${userId}`);
+    setCart(data);
+  } catch (error) {
+    console.error('Failed to load cart:', error);
+    // Set empty cart instead of leaving it null
+    setCart({ cartItems: [], totalPrice: 0 });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const removeItem = async (bookId) => {
     try {

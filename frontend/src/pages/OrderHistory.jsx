@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { apiCall } from '../api/api';
-import { Package, Calendar, DollarSign } from 'lucide-react';
+import { Package, Calendar, DollarSign, Book } from 'lucide-react';
 
 const OrderHistory = ({ userId }) => {
   const [orders, setOrders] = useState([]);
@@ -12,28 +12,16 @@ const OrderHistory = ({ userId }) => {
   }, []);
 
   const loadOrders = async () => {
-  setLoading(true);
-  try {
-    const data = await apiCall(`/customer/${userId}/viewPastOrders`);
-    setOrders(Array.isArray(data?.orders) ? data.orders : []);
-  } catch (error) {
-    console.error('Failed to load orders:', error);
-    setOrders([]);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
-  const getStatusColor = (status) => {
-    const colors = {
-      PENDING: 'bg-yellow-100 text-yellow-700',
-      PROCESSING: 'bg-blue-100 text-blue-700',
-      SHIPPED: 'bg-purple-100 text-purple-700',
-      COMPLETED: 'bg-green-100 text-green-700',
-      CANCELLED: 'bg-red-100 text-red-700'
-    };
-    return colors[status] || 'bg-gray-100 text-gray-700';
+    setLoading(true);
+    try {
+      const data = await apiCall(`/customer/${userId}/viewPastOrders`);
+      setOrders(Array.isArray(data?.orders) ? data.orders : []);
+    } catch (error) {
+      console.error('Failed to load orders:', error);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -62,14 +50,14 @@ const OrderHistory = ({ userId }) => {
           <div className="space-y-4">
             {orders.map((order) => (
               <div
-                key={order.customerOrderID}
+                key={order.orderId}
                 className="border rounded-lg p-6 hover:shadow-md transition cursor-pointer"
-                onClick={() => setSelectedOrder(selectedOrder?.customerOrderID === order.customerOrderID ? null : order)}
+                onClick={() => setSelectedOrder(selectedOrder?.orderId === order.orderId ? null : order)}
               >
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <h3 className="text-lg font-bold text-gray-800">
-                      Order #{order.customerOrderID}
+                      Order #{order.orderId}
                     </h3>
                     <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
                       <span className="flex items-center gap-1">
@@ -82,24 +70,28 @@ const OrderHistory = ({ userId }) => {
                       </span>
                     </div>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold ${getStatusColor(order.status)}`}>
-                    {order.status}
-                  </span>
+                  <div className="flex items-center gap-2 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full">
+                    <Book className="w-4 h-4" />
+                    <span className="text-sm font-medium">
+                      {order.books?.length || 0} book{order.books?.length !== 1 ? 's' : ''}
+                    </span>
+                  </div>
                 </div>
 
-                {selectedOrder?.customerOrderID === order.customerOrderID && order.items && (
+                {selectedOrder?.orderId === order.orderId && order.books && order.books.length > 0 && (
                   <div className="mt-4 pt-4 border-t">
-                    <h4 className="font-semibold mb-3">Order Items:</h4>
+                    <h4 className="font-semibold mb-3">Books in this order:</h4>
                     <div className="space-y-2">
-                      {order.items.map((item, index) => (
-                        <div key={index} className="flex justify-between items-center bg-gray-50 p-3 rounded">
-                          <div>
-                            <p className="font-medium">{item.book?.title || 'Book'}</p>
-                            <p className="text-sm text-gray-600">Quantity: {item.quantity}</p>
+                      {order.books.map((book, index) => (
+                        <div 
+                          key={`${order.orderId}-${book.isbn}-${index}`}
+                          className="flex items-center gap-3 bg-gray-50 p-3 rounded"
+                        >
+                          <Book className="w-5 h-5 text-indigo-600 flex-shrink-0" />
+                          <div className="flex-1">
+                            <p className="font-medium text-gray-800">{book.title}</p>
+                            <p className="text-sm text-gray-500">ISBN: {book.isbn}</p>
                           </div>
-                          <p className="font-semibold text-indigo-600">
-                            ${(item.price * item.quantity).toFixed(2)}
-                          </p>
                         </div>
                       ))}
                     </div>

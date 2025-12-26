@@ -34,24 +34,6 @@ const VerifyEmailPage = ({ email, onVerified, onBackToLogin }) => {
     }
   };
 
-  const handleResend = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      // You'll need to add a resend endpoint in your backend
-      await apiCall('/auth/resend-verification', {
-        method: 'POST',
-        body: JSON.stringify({ email })
-      });
-      alert('Verification code resent to your email!');
-    } catch (err) {
-      setError('Failed to resend code. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
@@ -112,23 +94,13 @@ const VerifyEmailPage = ({ email, onVerified, onBackToLogin }) => {
             {!loading && <ArrowRight className="w-5 h-5" />}
           </button>
 
-          <div className="text-center space-y-3">
+          <div className="text-center">
             <button
-              onClick={handleResend}
-              disabled={loading}
-              className="text-indigo-600 hover:text-indigo-700 font-medium text-sm disabled:opacity-50"
+              onClick={onBackToLogin}
+              className="text-gray-600 hover:text-gray-700 font-medium text-sm"
             >
-              Didn't receive the code? Resend
+              Back to Login
             </button>
-
-            <div>
-              <button
-                onClick={onBackToLogin}
-                className="text-gray-600 hover:text-gray-700 font-medium text-sm"
-              >
-                Back to Login
-              </button>
-            </div>
           </div>
         </div>
       </div>

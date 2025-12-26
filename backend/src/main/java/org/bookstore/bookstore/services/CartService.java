@@ -46,7 +46,7 @@ public class CartService {
 
     public CartDto getCartDetails(Integer userId) {
         Cart cart = cartRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new BusinessException("Cart not found"));
+                .orElseGet(() -> createCartForUser(userId));
 
         return cartMapper.toDto(cart);
     }

@@ -49,7 +49,7 @@ public class CartController {
         return ResponseEntity.ok("Quantity decremented");
     }
 
-    @DeleteMapping("{userId}/clear")
+    @DeleteMapping("/{userId}/clear")
     public ResponseEntity<String> clearCart(
             @PathVariable Integer userId
     ) {
