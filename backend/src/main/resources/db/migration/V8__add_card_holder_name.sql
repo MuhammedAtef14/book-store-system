@@ -1,0 +1,1 @@
+ALTER TABLE BillingInfos ADD COLUMN CardHolderName VARCHAR(50);
